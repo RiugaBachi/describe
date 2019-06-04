@@ -42,6 +42,7 @@ This library allows you to do something like the following:
 
 ```hs
 {-# LANGUAGE GADTs, DataKinds #-}
+
 import Data.Serialize.Descriptor
 import Data.Serialize.Descriptor.LE
 
@@ -61,8 +62,8 @@ descriptor = InitiatePlayerTrade <$> w32 f1
 
 main = do
   let message = InitiatePlayerTrade 31 46 79 81
-  Right bs <- serialize message descriptor
-  originalMessage <- deserialize message descriptor
+  let bs = serialize message descriptor
+  Right originalMessage <- deserialize bs descriptor
 ```
 
 As an added bonus, the combinator names are minimalistic (2-3 characters long), which helps churn out message structures faster.
