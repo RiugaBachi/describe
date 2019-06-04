@@ -1,6 +1,6 @@
 # describe
 
-`describe` is a library that provides the `Descriptor s a` applicative functor for describing binary data structures. The underlying binary serialization/deserialization library is `cereal`. Instead of describing how this can be useful, I find that its usefulness is best demonstrated with the following example.
+`describe` is a library that provides the `Descriptor s a` applicative functor for describing binary data structures. The underlying binary serialization/deserialization library is `cereal`. Instead of describing how this can be useful, I find that the following example best demonstrates what this library can bring to the table.
 
 ## The Problem
 
@@ -8,6 +8,7 @@ The problem with de/serialization libraries is that you end up having to write b
 
 ```hs
 {-# LANGUAGE RecordWildCards #-}
+
 import Data.Serialize.Get
 import Data.Serialize.Put
 
@@ -35,14 +36,16 @@ main = do
   Right original <- runGet getExample bs
 ```
 
-If you're someone like me who develops server emulators and the like, where a game has about ~430 opcodes, defining message structures like this can quickly lead to a burnout. While other libraries exist that can derive de/serialization implementations on a whole data structure, I find that this is too limiting for my needs. Deriving a structure via generics assumes the user is in full control of the structure of the data, but when you're writing a server emulator for some Korean MMO client, many of the packet fields will be unknown, and you'll want to fill it in with some sort of arbitrary value(s) known to work and hide that from the public interface of your message GADT or whatever.
+If you're someone like me who develops server emulators and the like, where a game has about ~430 opcodes, defining message structures like this can quickly lead to a burnout. While other libraries exist that can derive de/serialization implementations on a whole data structure via generics, I find that this is too limiting for my needs. Deriving a structure via generics assumes the user is in full control of the structure of the data, but when you're writing a server emulator for some Korean MMO client, many of the packet fields will be unknown, and you'll want to fill it in with some sort of arbitrary value(s) known to work and hide that from the public interface of your message GADT or whatever.
 
-My library allows you to do something like the following:
+This library allows you to do something like the following:
 
 ```hs
 {-# LANGUAGE GADTs, DataKinds #-}
 import Data.Serialize.Descriptor
 import Data.Serialize.Descriptor.LE
+
+data Direction = Clientbound | Serverbound | Bidirectional
 
 data PlayerTradeMessage (a :: Direction) where
   InitiatePlayerTrade :: { f1 :: Word32,
@@ -62,6 +65,6 @@ main = do
   originalMessage <- deserialize message descriptor
 ```
 
-As an added bonus, my combinator names are minimalistic (2-3 characters long), which helps churn out message structures faster.
+As an added bonus, the combinator names are minimalistic (2-3 characters long), which helps churn out message structures faster.
 
-I understand this library is somewhat niche, but hopefully others can find it useful. There is no `Monad` instance for `Descriptor s a` as it cannot be defined without running the inner `Get` per bind. I find that a monad instance isn't really ever necessary for writing message structures, so this shouldn't matter.
+I understand that this library is somewhat niche, but hopefully others can find it useful. There is no `Monad` instance for `Descriptor s a` as it cannot be defined without running the inner `Get` per bind. I find that a monad instance isn't really ever necessary for writing message structures, so this shouldn't matter.
