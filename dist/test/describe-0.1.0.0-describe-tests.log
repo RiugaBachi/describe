@@ -1,0 +1,4 @@
+Test suite describe-tests: RUNNING...
++++ OK, passed 1 test.
+Test suite describe-tests: PASS
+Test suite logged to: dist/test/describe-0.1.0.0-describe-tests.log
