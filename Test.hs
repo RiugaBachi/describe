@@ -1,10 +1,7 @@
 module Main where
 
 import Test.QuickCheck
-import Test.QuickCheck.Monadic
 import Data.Word
-import Data.Either
-import qualified Data.ByteString as B
 import Data.Serialize.Descriptor
 import Data.Serialize.Descriptor.LE
 

@@ -1,3 +1,4 @@
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y1WWTU)
 # describe
 
 `describe` is a library that provides the `Descriptor s a` applicative functor for describing binary data structures. The underlying binary serialization/deserialization library is `cereal`. Instead of describing how this can be useful, I find that the following example best demonstrates what this library can bring to the table.
