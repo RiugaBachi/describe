@@ -68,7 +68,7 @@ main = do
 
 As an added bonus, the combinator names are minimalistic (2-3 characters long), which helps churn out message structures faster.
 
-I understand that this library is somewhat niche, but hopefully others can find it useful. There is no `Monad` instance for `Descriptor s a` as it cannot be defined without running the inner `Get` per bind. I find that a monad instance isn't really ever necessary for writing message structures, so this shouldn't matter.
+I understand that this library is somewhat niche, but hopefully others can find it useful.
 
 #  
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y1WWTU)
