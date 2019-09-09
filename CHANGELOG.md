@@ -1,5 +1,9 @@
 # Revision history for describe
 
+## 0.1.2.1 -- 2019-09-08
+
+* Fixed unwrapPut / serialize.
+
 ## 0.1.2.0 -- 2019-09-08
 
 * Fixed Monad instance.

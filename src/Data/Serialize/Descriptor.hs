@@ -20,12 +20,12 @@ unwrapGet :: Descriptor s a -> Get a
 unwrapGet = fst . unwrapDescriptor
 
 -- | @unwrapPut s desc@ takes the structure being described and a 'Descriptor' for it, and returns the internal 'Put' monad.
-unwrapPut :: s -> Descriptor s a -> PutM ()
-unwrapPut s = ($ s) . snd . unwrapDescriptor . (>> pure ())
+unwrapPut :: s -> Descriptor s a -> PutM a
+unwrapPut s = ($ s) . snd . unwrapDescriptor
 
 -- | Convenience function for @runPut . unwrapPut s@
 serialize :: s -> Descriptor s a -> ByteString
-serialize s = snd . runPutM . unwrapPut s . (>> pure ())
+serialize s = snd . runPutM . unwrapPut s
 
 -- | Convenience function for @flip runGet bs . unwrapGet@
 deserialize :: ByteString -> Descriptor s s -> Either String s
