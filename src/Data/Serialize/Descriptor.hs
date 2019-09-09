@@ -12,7 +12,7 @@ import Data.Serialize.Put
 
 -- | @Descriptor s a@ is an applicative functor that describes the binary structure for a structure 's' while deserializing value 'a'.
 newtype Descriptor s a = Descriptor {
-    unwrapDescriptor :: (Get a, s -> Put)
+    unwrapDescriptor :: (Get a, s -> PutM a)
 }
 
 -- | @unwrapGet desc@ takes a 'Descriptor' and returns only the internal 'Get' monad.
@@ -21,25 +21,25 @@ unwrapGet = fst . unwrapDescriptor
 
 -- | @unwrapPut s desc@ takes the structure being described and a 'Descriptor' for it, and returns the internal 'Put' monad.
 unwrapPut :: s -> Descriptor s a -> PutM ()
-unwrapPut s = ($ s) . snd . unwrapDescriptor
+unwrapPut s = ($ s) . snd . unwrapDescriptor . (>> pure ())
 
 -- | Convenience function for @runPut . unwrapPut s@
 serialize :: s -> Descriptor s a -> ByteString
-serialize s = snd . runPutM . unwrapPut s
+serialize s = snd . runPutM . unwrapPut s . (>> pure ())
 
 -- | Convenience function for @flip runGet bs . unwrapGet@
 deserialize :: ByteString -> Descriptor s s -> Either String s
 deserialize bs = flip runGet bs . unwrapGet
 
 instance Functor (Descriptor s) where
-  fmap f (Descriptor (g, p)) = Descriptor (f <$> g, p)
+  fmap f (Descriptor (g, p)) = Descriptor (f <$> g, (f <$>) . p)
 
 instance Applicative (Descriptor s) where
-  pure a = Descriptor (pure a, \_ -> pure ())
+  pure a = Descriptor (pure a, \_ -> pure a)
   (Descriptor (f, p)) <*> (Descriptor (g, p')) =
-    Descriptor (f <*> g, \s' -> p s' >> p' s')
+    Descriptor (f <*> g, \s' -> p s' <*> p' s')
 
 instance Monad (Descriptor s) where
   (Descriptor (g, p)) >>= f =
-    Descriptor (g >>= fst . unwrapDescriptor . f, \s -> (p s <>) . ($ s) . snd . unwrapDescriptor . f $ undefined)
+    Descriptor (g >>= fst . unwrapDescriptor . f, \s -> p s >>= ($ s) . snd . unwrapDescriptor . f)
 
