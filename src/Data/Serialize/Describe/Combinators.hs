@@ -1,8 +1,7 @@
+-- | Various type-level combinators to ease generic derivation of 'Describe'
 module Data.Serialize.Describe.Combinators(
   Optional(..),
-  StaticPred(..),
-  LE(..),
-  BE(..)
+  StaticPred(..)
 ) where
 
 import GHC.TypeNats
@@ -11,10 +10,6 @@ import Data.Maybe
 import Data.Serialize.Describe.Descriptor
 import Data.Serialize.Describe.Class
 import qualified Data.Serialize.Get as G
-
-newtype LE a = LE { unwrapLE :: a }
-
-newtype BE a = BE { unwrapBE :: a }
 
 newtype Optional p t = Optional { unwrapOptional :: Maybe t }
 
