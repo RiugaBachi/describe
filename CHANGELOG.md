@@ -1,5 +1,9 @@
 # Revision history for describe
 
+## 0.2.0.3 -- 2019-10-06
+
+* Added constraint on `Optional` to prevent overlapping instances on the supplied predicate.
+
 ## 0.2.0.2 -- 2019-10-06
 
 * Exposed `Equals`.

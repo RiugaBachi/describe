@@ -15,7 +15,7 @@ import Data.Vector.Fixed.Boxed (Vec)
 import qualified Data.Serialize.Get as G
 
 -- | An 'Optional' represents a field which is optionally-serializable. The field will be parsed via a lookAhead and, if the value matches the 'Predicate' p, then the field exists. If not, it is assumed as though the field was never serialized in the first place and the value will be set to 'Nothing'; parsing will then continue on as usual.
-newtype Optional p t = Optional { unwrapOptional :: Maybe t }
+newtype Predicate t p => Optional p t = Optional { unwrapOptional :: Maybe t }
 
 class Predicate t a where
   check :: t -> Bool
