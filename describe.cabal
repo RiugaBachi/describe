@@ -3,7 +3,7 @@ cabal-version:       2.4
 --   For further documentation, see http://haskell.org/cabal/users-guide/
 
 name:                describe
-version:             0.1.2.0
+version:             0.2.0.0
 synopsis:            Combinators for describing binary data structures
 description:         Combinators for describing binary data structures, which eliminate the boilerplate of having to write isomorphic Get and Put instances. Please see the Github page for examples.
 homepage:            https://github.com/riugabachi/describe
@@ -19,17 +19,35 @@ source-repository head
   location: https://github.com/RiugaBachi/describe.git
 
 common deps
+  default-extensions: TypeApplications,
+                      MultiParamTypeClasses,
+                      AllowAmbiguousTypes,
+                      FunctionalDependencies,
+                      TypeOperators,
+                      FlexibleContexts,
+                      DefaultSignatures,
+                      DataKinds,
+                      UndecidableInstances,
+                      KindSignatures
+                      ConstraintKinds,
+                      EmptyDataDecls,
+                      ScopedTypeVariables,
+                      FlexibleInstances
   build-depends: base ^>= 4.12.0.0,
                  cereal >= 0.5.8 && < 0.6,
-                 bytestring >= 0.10.8 && < 0.11
+                 bytestring >= 0.10.8 && < 0.11,
+                 fixed-vector
   ghc-options: -Wall
   default-language: Haskell2010
 
 library
   import: deps
-  exposed-modules:     Data.Serialize.Descriptor,
-                       Data.Serialize.Descriptor.LE,
-                       Data.Serialize.Descriptor.BE
+  exposed-modules:     Data.Serialize.Describe,
+                       Data.Serialize.Describe.Descriptor,
+                       Data.Serialize.Describe.Combinators,
+                       Data.Serialize.Describe.Combinators.LE,
+                       Data.Serialize.Describe.Combinators.BE,
+                       Data.Serialize.Describe.Class
   hs-source-dirs:      src
 
 test-suite describe-tests

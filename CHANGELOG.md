@@ -1,5 +1,12 @@
 # Revision history for describe
 
+## 0.2.0.0 -- 2019-10-06
+
+* Added `Describe` type class.
+* Made `Describe` generically-derivable.
+* Refactored module structure.
+* Added type- and value-level combinators to be used with `Describe`.
+
 ## 0.1.2.1 -- 2019-09-08
 
 * Fixed unwrapPut / serialize.

@@ -3,7 +3,7 @@
 -- All combinators take a function that takes the structure being described ('a') and produces the specified data type from it.
 -- Most of the time, this will be one of the structure's fields, which are all functions from the structure to the field type.
 
-module Data.Serialize.Descriptor.BE(
+module Data.Serialize.Describe.Combinators.BE(
   w8, w16, w32, w64,
   i8, i16, i32, i64,
   f32, f64
@@ -14,7 +14,7 @@ import Data.Int
 import Data.Serialize.IEEE754
 import Data.Serialize.Get
 import Data.Serialize.Put
-import Data.Serialize.Descriptor
+import Data.Serialize.Describe.Descriptor
 
 w8 :: (a -> Word8) -> Descriptor a Word8
 w8 f = Descriptor (getWord8, \s' -> putWord8 (f s') >> pure (f s'))

@@ -4,7 +4,7 @@
 -- Most of the time, this will be one of the structure's fields, which are all functions from the structure to the field type.
 
 
-module Data.Serialize.Descriptor.LE(
+module Data.Serialize.Describe.Combinators.LE(
   w8, w16, w32, w64,
   i8, i16, i32, i64,
   f32, f64
@@ -15,7 +15,7 @@ import Data.Int
 import Data.Serialize.IEEE754
 import Data.Serialize.Get
 import Data.Serialize.Put
-import Data.Serialize.Descriptor
+import Data.Serialize.Describe.Descriptor
 
 w8 :: (a -> Word8) -> Descriptor a Word8
 w8 f = Descriptor (getWord8, \s' -> putWord8 (f s') >> pure (f s'))

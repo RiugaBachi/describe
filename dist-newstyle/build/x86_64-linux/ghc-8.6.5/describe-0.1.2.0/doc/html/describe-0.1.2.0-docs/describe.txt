@@ -24,7 +24,7 @@ unwrapGet :: Descriptor s a -> Get a
 
 -- | <tt>unwrapPut s desc</tt> takes the structure being described and a
 --   <a>Descriptor</a> for it, and returns the internal <a>PutM</a> monad.
-unwrapPut :: s -> Descriptor s a -> PutM ()
+unwrapPut :: s -> Descriptor s a -> PutM a
 
 -- | Convenience function for <tt>runPut . unwrapPut s</tt>
 serialize :: s -> Descriptor s a -> ByteString

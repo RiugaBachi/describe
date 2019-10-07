@@ -1,11 +1,10 @@
-module Data.Serialize.Descriptor(
-    Descriptor(Descriptor),
-    unwrapGet,
-    unwrapPut,
-    serialize,
-    deserialize
+module Data.Serialize.Describe.Descriptor(
+  Descriptor(Descriptor),
+  unwrapGet,
+  unwrapPut,
+  serialize,
+  deserialize
 ) where
-
 import Data.ByteString (ByteString)
 import Data.Serialize.Get
 import Data.Serialize.Put
