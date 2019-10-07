@@ -25,7 +25,7 @@ data Equals (n :: Nat)
 instance (KnownNat n, Integral i) => Predicate i (Equals n) where
   check i = i == (fromIntegral $ natVal (Proxy :: Proxy n))
 
-instance (KnownNat n1, KnownNat n2, V.Arity n2, V.Vector (Vec n2) i, Integral i) => Predicate (Vec n2 i) (Equals n1) where
+instance {-# OVERLAPPING #-} (KnownNat n1, KnownNat n2, V.Arity n2, V.Vector (Vec n2) i, Integral i) => Predicate (Vec n2 i) (Equals n1) where
   check = V.all (== fromIntegral (natVal (Proxy :: Proxy n1)))
 
 instance (Describe a, Predicate a p) => Describe (Optional p a) where

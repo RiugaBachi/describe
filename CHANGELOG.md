@@ -1,5 +1,9 @@
 # Revision history for describe
 
+## 0.2.0.4 -- 2019-10-06
+
+* Made Vec instance for Equals overlapping. 
+
 ## 0.2.0.3 -- 2019-10-06
 
 * Added constraint on `Optional` to prevent overlapping instances on the supplied predicate.
