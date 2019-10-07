@@ -3,8 +3,11 @@ module Data.Serialize.Describe.Descriptor(
   unwrapGet,
   unwrapPut,
   serialize,
-  deserialize
+  deserialize,
+  deserializeEx
 ) where
+
+import Control.Exception
 import Data.ByteString (ByteString)
 import Data.Serialize.Get
 import Data.Serialize.Put
@@ -29,6 +32,17 @@ serialize s = snd . runPutM . unwrapPut s
 -- | Convenience function for @flip runGet bs . unwrapGet@
 deserialize :: ByteString -> Descriptor s s -> Either String s
 deserialize bs = flip runGet bs . unwrapGet
+
+newtype ParserException = ParserException String
+                        deriving (Show)
+
+instance Exception ParserException
+
+-- | Like 'deserialize', but throw a 'ParserException' upon failure rather than an `Either`.
+deserializeEx :: ByteString -> Descriptor s s -> s
+deserializeEx bs d = case deserialize bs d of
+  Left err -> throw $ ParserException err
+  Right a -> a
 
 instance Functor (Descriptor s) where
   fmap f (Descriptor (g, p)) = Descriptor (f <$> g, (f <$>) . p)

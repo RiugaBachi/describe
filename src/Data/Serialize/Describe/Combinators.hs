@@ -1,5 +1,6 @@
 -- | Various type-level combinators to ease generic derivation of 'Describe'
 module Data.Serialize.Describe.Combinators(
+  Remaining(..),
   Optional(..),
   Predicate(..),
   Equals
@@ -8,11 +9,19 @@ module Data.Serialize.Describe.Combinators(
 import GHC.TypeNats
 import Data.Proxy
 import Data.Maybe
+import Data.ByteString
 import Data.Serialize.Describe.Descriptor
 import Data.Serialize.Describe.Class
 import qualified Data.Vector.Fixed as V
 import Data.Vector.Fixed.Boxed (Vec)
 import qualified Data.Serialize.Get as G
+import qualified Data.Serialize.Put as P
+
+-- | A  'Remaining' represents the rest of the buffer. Upon serialization, the entire wrapped ByteString will be written.
+newtype Remaining = Remaining { unwrapRemaining :: ByteString }
+
+instance Describe Remaining where
+  describe f = Descriptor (fmap Remaining . G.getByteString =<< G.remaining, \s -> P.putByteString (unwrapRemaining (f s)) >> pure (f s))
 
 -- | An 'Optional' represents a field which is optionally-serializable. The field will be parsed via a lookAhead and, if the value matches the 'Predicate' p, then the field exists. If not, it is assumed as though the field was never serialized in the first place and the value will be set to 'Nothing'; parsing will then continue on as usual.
 newtype Optional p t = Optional { unwrapOptional :: Maybe t }

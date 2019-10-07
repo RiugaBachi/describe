@@ -1,5 +1,10 @@
 # Revision history for describe
 
+## 0.2.0.5 -- 2019-10-07
+
+* Added the `Remaining` combinator.
+* Added `deserializeEx`.
+
 ## 0.2.0.4 -- 2019-10-06
 
 * Made Vec instance for Equals overlapping. 
