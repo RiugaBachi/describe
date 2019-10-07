@@ -1,5 +1,9 @@
 # Revision history for describe
 
+## 0.2.0.2 -- 2019-10-06
+
+* Exposed `Equals`.
+
 ## 0.2.0.1 -- 2019-10-06
 
 * Exposed hidden instances.

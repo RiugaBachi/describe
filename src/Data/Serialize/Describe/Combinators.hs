@@ -1,7 +1,8 @@
 -- | Various type-level combinators to ease generic derivation of 'Describe'
 module Data.Serialize.Describe.Combinators(
   Optional(..),
-  StaticPred(..)
+  Predicate(..),
+  Equals
 ) where
 
 import GHC.TypeNats
@@ -9,19 +10,25 @@ import Data.Proxy
 import Data.Maybe
 import Data.Serialize.Describe.Descriptor
 import Data.Serialize.Describe.Class
+import qualified Data.Vector.Fixed as V
+import Data.Vector.Fixed.Boxed (Vec)
 import qualified Data.Serialize.Get as G
 
+-- | An 'Optional' represents a field which is optionally-serializable. The field will be parsed via a lookAhead and, if the value matches the 'Predicate' p, then the field exists. If not, it is assumed as though the field was never serialized in the first place and the value will be set to 'Nothing'; parsing will then continue on as usual.
 newtype Optional p t = Optional { unwrapOptional :: Maybe t }
 
-class StaticPred t a where
+class Predicate t a where
   check :: t -> Bool
 
 data Equals (n :: Nat)
 
-instance (KnownNat n, Integral i) => StaticPred i (Equals n) where
+instance (KnownNat n, Integral i) => Predicate i (Equals n) where
   check i = i == (fromIntegral $ natVal (Proxy :: Proxy n))
 
-instance (Describe a, StaticPred a p) => Describe (Optional p a) where
+instance (KnownNat n1, KnownNat n2, V.Arity n2, V.Vector (Vec n2) i, Integral i) => Predicate (Vec n2 i) (Equals n1) where
+  check = V.all (== fromIntegral (natVal (Proxy :: Proxy n1)))
+
+instance (Describe a, Predicate a p) => Describe (Optional p a) where
   describe f = Descriptor (g, p)
     where
       g = do 
