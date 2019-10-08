@@ -1,5 +1,6 @@
 -- | Various type-level combinators to ease generic derivation of 'Describe'
 module Data.Serialize.Describe.Combinators(
+  isolate,
   Remaining(..),
   Optional(..),
   Predicate(..),
@@ -16,6 +17,9 @@ import qualified Data.Vector.Fixed as V
 import Data.Vector.Fixed.Boxed (Vec)
 import qualified Data.Serialize.Get as G
 import qualified Data.Serialize.Put as P
+
+isolate :: Int -> Descriptor s a -> Descriptor s a
+isolate amt desc = Descriptor (G.isolate amt $ unwrapGet desc, flip unwrapPut desc)
 
 -- | A  'Remaining' represents the rest of the buffer. Upon serialization, the entire wrapped ByteString will be written.
 newtype Remaining = Remaining { unwrapRemaining :: ByteString }

@@ -1,5 +1,9 @@
 # Revision history for describe
 
+##0.2.0.6 -- 2019-10-08
+
+* Added `isolate` combinator.
+
 ## 0.2.0.5 -- 2019-10-07
 
 * Added the `Remaining` combinator.
