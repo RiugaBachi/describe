@@ -9,6 +9,7 @@ import qualified Data.Vector.Fixed as V
 import Data.Serialize.Get
 import Data.Serialize.Put
 import Data.Vector.Fixed.Boxed (Vec)
+import Data.Char
 import Data.Int
 import Data.Proxy
 import Data.Word
@@ -47,6 +48,9 @@ instance Describe () where
 
 instance Describe Bool where
     describe f = toEnum . fromIntegral <$> describe (fromIntegral @_ @Word8 . fromEnum . f)
+
+instance Describe Char where
+    describe f = chr . fromIntegral <$> describe @Word8 (fromIntegral . ord <$> f)
 
 instance Describe Word8 where
     describe f = Descriptor (fromIntegral <$> getWord8, \s' -> putWord8 (fromIntegral $ f s') >> pure (fromIntegral $ f s'))

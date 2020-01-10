@@ -7,6 +7,7 @@ module Data.Serialize.Describe.Combinators(
   module Data.Serialize.Describe.Combinators.Const,
   module Data.Serialize.Describe.Combinators.ByteEnum,
   module Data.Serialize.Describe.Combinators.Conditional,
+  module Data.Serialize.Describe.Combinators.NText,
   module Data.Serialize.Describe.Combinators.Byte
 ) where
 
@@ -18,4 +19,5 @@ import Data.Serialize.Describe.Combinators.LPList
 import Data.Serialize.Describe.Combinators.Const
 import Data.Serialize.Describe.Combinators.ByteEnum
 import Data.Serialize.Describe.Combinators.Conditional
+import Data.Serialize.Describe.Combinators.NText
 import Data.Serialize.Describe.Combinators.Byte

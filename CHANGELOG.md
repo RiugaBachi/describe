@@ -2,6 +2,10 @@
 
 ##0.3.0.1 -- 2020-01-09
 
+* Added NText combinator
+
+##0.3.0.1 -- 2020-01-09
+
 * Added unexposed combinator modules
 
 ##0.3.0.0 -- 2020-01-09
