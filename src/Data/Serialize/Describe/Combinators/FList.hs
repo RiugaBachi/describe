@@ -3,7 +3,6 @@ module Data.Serialize.Describe.Combinators.FList where
 import GHC.TypeNats
 import Data.Proxy
 import Data.Serialize.Describe
-import Data.Word
 import Data.Serialize.Describe.Combinators.Const
 import Data.Serialize.Describe.Combinators.BE
 import Data.Serialize.Describe.Combinators.LE
@@ -28,8 +27,8 @@ class Nullable a where
 instance Num n => Nullable n where
   nullVal = 0
 
-deriving via n instance Num n => Nullable (LE n)
-deriving via n instance Num n => Nullable (BE n)
+deriving instance Num n => Nullable (LE n)
+deriving instance Num n => Nullable (BE n)
 
 instance Nullable (Const n a) where
   nullVal = Const
