@@ -1,6 +1,5 @@
 module Data.Serialize.Describe.Combinators.NText where
 
-import Data.Word
 import Data.Char
 import Data.String
 import Data.Text (Text)

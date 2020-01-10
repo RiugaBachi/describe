@@ -1,6 +1,10 @@
 # Revision history for describe
 
-##0.3.0.1 -- 2020-01-09
+##0.3.1.1 -- 2020-01-09
+
+* Added flist combinator
+
+##0.3.1.0 -- 2020-01-09
 
 * Added NText combinator
 

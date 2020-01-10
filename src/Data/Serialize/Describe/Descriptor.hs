@@ -8,6 +8,7 @@ module Data.Serialize.Describe.Descriptor(
 ) where
 
 import Control.Exception
+import Control.Monad.Fail
 import Data.ByteString (ByteString)
 import Data.Serialize.Get
 import Data.Serialize.Put
