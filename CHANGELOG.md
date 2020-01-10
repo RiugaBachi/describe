@@ -1,5 +1,10 @@
 # Revision history for describe
 
+##0.3.0.0 -- 2020-01-09
+
+* Reorganized module structure
+* Added new combinators: FText, ByteEnum, FList, LPList, Const
+
 ##0.2.0.6 -- 2019-10-08
 
 * Added `isolate` combinator.
