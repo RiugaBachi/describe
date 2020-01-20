@@ -1,5 +1,16 @@
 # Revision history for describe
 
+##0.4.0.1 -- 2020-01-19
+
+* Fixed module exports
+* Updated docs
+
+##0.4.0.0 -- 2020-01-19
+
+* Added lens isomorphism utilities
+* Split the role of 'describe' into 'field'/'fieldOf'
+* Added the `conditionally` combinator
+
 ##0.3.1.1 -- 2020-01-09
 
 * Added flist combinator

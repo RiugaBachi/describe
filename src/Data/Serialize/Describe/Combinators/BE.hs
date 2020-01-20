@@ -15,57 +15,58 @@ import Data.Int
 import Data.Serialize.IEEE754
 import Data.Serialize.Get
 import Data.Serialize.Put
-import Data.Serialize.Describe.Descriptor
+import Data.Serialize.Describe.Internal.Descriptor
+import Data.Serialize.Describe.Isomorphisms
 import Data.Serialize.Describe.Class
 
 w16 :: Integral i => (s -> i) -> Descriptor s i
-w16 f = Descriptor (fromIntegral <$> getWord16be, \s' -> putWord16be (fromIntegral $ f s') >> pure (f s'))
+w16 = isoField @(BE Word16) fi
 
 w32 :: Integral i => (s -> i) -> Descriptor s i
-w32 f = Descriptor (fromIntegral <$> getWord32be, \s' -> putWord32be (fromIntegral $ f s') >> pure (f s'))
+w32 = isoField @(BE Word32) fi
 
 w64 :: Integral i => (s -> i) -> Descriptor s i
-w64 f = Descriptor (fromIntegral <$> getWord64be, \s' -> putWord64be (fromIntegral $ f s') >> pure (f s'))
+w64 = isoField @(BE Word64) fi
 
 i16 :: Integral i => (s -> i) -> Descriptor s i
-i16 f = Descriptor (fromIntegral <$> getInt16be, \s' -> putInt16be (fromIntegral $ f s') >> pure (f s'))
+i16 = isoField @(BE Int16) fi
 
 i32 :: Integral i => (s -> i) -> Descriptor s i
-i32 f = Descriptor (fromIntegral <$> getInt32be, \s' -> putInt32be (fromIntegral $ f s') >> pure (f s'))
+i32 = isoField @(BE Int32) fi
 
 i64 :: Integral i => (s -> i) -> Descriptor s i
-i64 f = Descriptor (fromIntegral <$> getInt64be, \s' -> putInt64be (fromIntegral $ f s') >> pure (f s'))
+i64 = isoField @(BE Int64) fi
 
 f32 :: (Real f, Fractional f) => (s -> f) -> Descriptor s f
-f32 f = Descriptor (realToFrac <$> getFloat32be, \s' -> putFloat32be (realToFrac $ f s') >> pure (f s'))
+f32 = isoField @(BE Float) rtf
 
 f64 :: (Real f, Fractional f) => (s -> f) -> Descriptor s f
-f64 f = Descriptor (realToFrac <$> getFloat64be, \s' -> putFloat64be (realToFrac $ f s') >> pure (f s'))
+f64 = isoField @(BE Double) rtf
 
-newtype BE a = BE { unwrapBE :: a }
-             deriving (Show, Read, Num, Eq, Ord, Enum, Integral, Real, Fractional)
+newtype BE a 
+  = BE { unwrapBE :: a }
+  deriving newtype (Show, Read, Num, Eq, Ord, Enum, Integral, Real, Fractional)
 
 instance Describe (BE Word16) where
-    describe = w16
+    describe = mkDescriptor fi (const 2) getWord16be putWord16be
 
 instance Describe (BE Word32) where
-    describe = w32
+    describe = mkDescriptor fi (const 4) getWord32be putWord32be
 
 instance Describe (BE Word64) where
-    describe = w64
+    describe = mkDescriptor fi (const 8) getWord64be putWord64be
 
 instance Describe (BE Int16) where
-    describe = i16
+    describe = mkDescriptor fi (const 2) getInt16be putInt16be
 
 instance Describe (BE Int32) where
-    describe = i32
+    describe = mkDescriptor fi (const 4) getInt32be putInt32be
 
 instance Describe (BE Int64) where
-    describe = i64
+    describe = mkDescriptor fi (const 8) getInt64be putInt64be
 
 instance Describe (BE Float) where
-    describe = f32
+    describe = mkDescriptor rtf (const 4) getFloat32be putFloat32be
 
 instance Describe (BE Double) where
-    describe = f64
-
+    describe = mkDescriptor rtf (const 8) getFloat64be putFloat64be

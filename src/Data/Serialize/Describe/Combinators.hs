@@ -1,5 +1,4 @@
 module Data.Serialize.Describe.Combinators(
-  module Data.Serialize.Describe.Combinators.Isolate,
   module Data.Serialize.Describe.Combinators.Remaining,
   module Data.Serialize.Describe.Combinators.FText,
   module Data.Serialize.Describe.Combinators.FList,
@@ -11,7 +10,6 @@ module Data.Serialize.Describe.Combinators(
   module Data.Serialize.Describe.Combinators.Byte
 ) where
 
-import Data.Serialize.Describe.Combinators.Isolate
 import Data.Serialize.Describe.Combinators.Remaining
 import Data.Serialize.Describe.Combinators.FText
 import Data.Serialize.Describe.Combinators.FList

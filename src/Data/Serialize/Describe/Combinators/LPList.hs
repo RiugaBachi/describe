@@ -9,7 +9,8 @@ newtype LPList t a
   deriving (Show) via [a]
 
 instance (Describe t, Describe a, Integral t) => Describe (LPList t a) where
-  describe f = do
-    len <- describe @t $ fromIntegral . length . unwrapLPList . f
-    fmap LPList $ forM [0..fromIntegral len-1] $ \i -> describe @a $ (!! i) . unwrapLPList . f 
+  type Context m (LPList t a) = (Context m a, Context m t)
+  describe = do
+    len <- field @t $ fromIntegral . length . unwrapLPList
+    fmap LPList $ forM [0..fromIntegral len-1] $ \i -> field @a $ (!! i) . unwrapLPList
 

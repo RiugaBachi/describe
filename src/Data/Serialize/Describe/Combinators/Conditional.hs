@@ -1,13 +1,13 @@
 module Data.Serialize.Describe.Combinators.Conditional where
 
+import Prelude hiding (id, (.))
 import GHC.TypeNats
 import Data.Proxy
-import Data.Maybe
 import qualified Data.Vector.Fixed as V
 import Data.Vector.Fixed.Boxed
-import qualified Data.Serialize.Get as G
-import Data.Serialize.Describe.Descriptor
+import Data.Serialize.Describe.Internal.Descriptor
 import Data.Serialize.Describe.Class
+import Control.Monad.Trans.Control
 
 -- | An 'Optional' represents a field which is optionally-serializable. The field will be parsed via a lookAhead and, if the value matches the 'Predicate' p, then the field exists. If not, it is assumed as though the field was never serialized in the first place and the value will be set to 'Nothing'; parsing will then continue on as usual.
 newtype Optional p t = Optional { unwrapOptional :: Maybe t }
@@ -24,13 +24,5 @@ instance {-# OVERLAPPING #-} (KnownNat n1, KnownNat n2, V.Arity n2, V.Vector (Ve
   check = V.all (== fromIntegral (natVal (Proxy :: Proxy n1)))
 
 instance (Describe a, Predicate a p) => Describe (Optional p a) where
-  describe f = Descriptor (g, p)
-    where
-      g = do 
-        let d = unwrapGet $ describe @a $ fromJust . unwrapOptional . f
-        v <- G.lookAhead d
-        Optional <$> if check @a @p v then Just <$> d else pure Nothing
-      p s = case unwrapOptional $ f s of
-        Just x -> Optional . Just <$> unwrapPut s (describe $ const x)
-        Nothing -> pure $ Optional Nothing
-
+  type Context m (Optional p a) = (MonadTransControl m, Context m a)
+  describe = Optional <$> conditionally unwrapOptional (check @a @p) describe

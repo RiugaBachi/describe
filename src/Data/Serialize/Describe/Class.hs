@@ -1,9 +1,12 @@
 module Data.Serialize.Describe.Class(
-  Describe, describe
+  Describe(..),
+  field, isoField
 ) where
 
 import GHC.Generics
+import GHC.Exts
 import GHC.TypeNats
+import Data.Profunctor
 import Control.Monad
 import qualified Data.Vector.Fixed as V
 import Data.Serialize.Get
@@ -13,52 +16,91 @@ import Data.Char
 import Data.Int
 import Data.Proxy
 import Data.Word
-import Data.Serialize.Describe.Descriptor
+import Control.Lens (view)
+import Control.Lens.Iso (Iso')
+import qualified Control.Lens.Iso as I
+import Control.Monad.Trans.Class
+import Control.Monad.Trans.Identity
+import Data.Serialize.Describe.Internal.Descriptor
+import Data.Serialize.Describe.Isomorphisms
 
 class Describe a where
-  describe :: (s -> a) -> Descriptor s a
+  {-# MINIMAL #-}
+  type Context (m :: (* -> *) -> * -> *) a :: Constraint 
+  type Context m a = () 
 
-  default describe :: (Generic a, GDescribe (Rep a)) => (s -> a) -> Descriptor s a 
-  describe f = fmap to . gdescribe $ from <$> f
+  describe :: (MonadTrans m, forall x. Monad x => Monad (m x), Context m a) => DescriptorM m a a
+
+  default describe :: ( Generic a
+                      , GDescribe (Rep a)
+                      , MonadTrans m
+                      , forall x. Monad x => Monad (m x)
+                      ) => DescriptorM m a a 
+  describe = morphTransformer (lift . runIdentityT) $ dimap from to gdescribe
+
+-- | A descriptor from structure to field.
+field 
+  :: forall a m s. 
+      ( Describe a
+      , MonadTrans m
+      , forall x. Monad x => Monad (m x)
+      , Context m a
+      )
+  => (s -> a) 
+  -> DescriptorM m s a
+field f = morphRef f describe
+
+-- | Similar to @field@, but applied to an isomorphism.
+isoField :: (Describe b, MonadTrans m, forall x. Monad x => Monad (m x), Context m b) 
+         => Iso' a b 
+         -> (s -> a) 
+         -> DescriptorM m s a
+isoField i f = view (I.from i) <$> morphRef (view i . f) describe
 
 class GDescribe f where
-  gdescribe :: (s -> f a) -> Descriptor s (f a)
+  gdescribe :: Descriptor (f a) (f a)
   
 instance GDescribe U1 where
-  gdescribe _ = pure U1
+  gdescribe = pure U1
 
 instance (GDescribe a, GDescribe b) => GDescribe (a :*: b) where
-  gdescribe f = liftM2 (:*:) (gdescribe (l . f))  (gdescribe (r . f))
+  gdescribe = liftM2 (:*:) (lmap l gdescribe) (lmap r gdescribe)
     where
       l (a :*: _) = a
       r (_ :*: b) = b
 
 instance (GDescribe a) => GDescribe (M1 i c a) where
-  gdescribe f = M1 <$> gdescribe (extract . f)
+  gdescribe = M1 <$> lmap extract gdescribe
     where
       extract (M1 x) = x
 
-instance (Describe a) => GDescribe (K1 i a) where
-  gdescribe f = K1 <$> describe (extract . f)
+instance (Describe a, Context IdentityT a) => GDescribe (K1 i a) where
+  gdescribe = K1 <$> lmap extract describe
     where
       extract (K1 x) = x
 
 instance Describe () where
-  describe _ = pure ()
+  describe = pure ()
 
 instance Describe Bool where
-    describe f = toEnum . fromIntegral <$> describe (fromIntegral @_ @Word8 . fromEnum . f)
+    describe = toEnum . fromIntegral <$> field (fromIntegral @_ @Word8 . fromEnum)
 
 instance Describe Char where
-    describe f = chr . fromIntegral <$> describe @Word8 (fromIntegral . ord <$> f)
+    describe = chr . fromIntegral <$> field @Word8 (fromIntegral . ord)
 
 instance Describe Word8 where
-    describe f = Descriptor (fromIntegral <$> getWord8, \s' -> putWord8 (fromIntegral $ f s') >> pure (fromIntegral $ f s'))
+  describe = mkDescriptor fi (const 1) getWord8 putWord8
 
 instance Describe Int8 where
-    describe f = Descriptor (fromIntegral <$> getInt8, \s' -> putInt8 (fromIntegral $ f s') >> pure (f s'))
+    describe = mkDescriptor fi (const 1) getWord8 putWord8
 
-instance (Describe a, V.Arity n, V.Vector (Vec n) a, KnownNat n) => Describe (Vec n a) where
-    describe f =
+instance 
+  ( Describe a
+  , V.Arity n
+  , V.Vector (Vec n) a
+  , KnownNat n
+  ) => Describe (Vec n a) where
+    type Context m (Vec n a) = Context m a
+    describe =
        V.fromList <$> forM [0..fromIntegral (natVal (Proxy :: Proxy n))-1] 
-        (\i -> describe $ (V.! i) . f)
+        (\i -> field (V.! i))
