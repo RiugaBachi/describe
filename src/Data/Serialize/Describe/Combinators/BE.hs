@@ -43,9 +43,11 @@ f32 = isoField @(BE Float) rtf
 f64 :: (Real f, Fractional f) => (s -> f) -> Descriptor s f
 f64 = isoField @(BE Double) rtf
 
-newtype BE a 
+newtype BE a
   = BE { unwrapBE :: a }
   deriving newtype (Show, Read, Num, Eq, Ord, Enum, Integral, Real, Fractional)
+
+type role BE representational
 
 instance Describe (BE Word16) where
     describe = mkDescriptor fi (const 2) getWord16be putWord16be

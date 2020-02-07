@@ -46,6 +46,8 @@ newtype LE a
   = LE { unwrapLE :: a }
   deriving newtype (Show, Read, Num, Eq, Ord, Enum, Integral, Real, Fractional)
 
+type role LE representational
+
 instance Describe (LE Word16) where
     describe = mkDescriptor fi (const 2) getWord16le putWord16le
 

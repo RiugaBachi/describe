@@ -1,3 +1,11 @@
+-- | @ByteEnum@ wraps an @Enum@ to be described as a Word8. Intended to be used with DerivingVia so as to not introduce unnecessary newtype wrappers:
+--
+-- >
+-- > data MyEnum = A | B | C 
+-- >             deriving Enum
+-- >             deriving Describe via ByteEnum MyEnum
+-- >
+--
 module Data.Serialize.Describe.Combinators.ByteEnum where
 
 import GHC.Generics hiding (from)
@@ -7,10 +15,6 @@ import Data.Word
 import Data.Serialize.Describe.Class
 import Data.Serialize.Describe.Isomorphisms
 
--- | Wraps an @Enum@ to be described as a Word8. Intended to be used with DerivingVia so as to not introduce unnecessary newtype wrappers:
--- > data MyEnum = A | B | C 
--- >             deriving Enum
--- >             deriving Describe via ByteEnum MyEnum
 newtype ByteEnum e 
   = ByteEnum { unwrapByteEnum :: e }
   deriving (Generic)
