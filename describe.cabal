@@ -1,6 +1,6 @@
 cabal-version:       2.4
 name:                describe
-version:             0.4.0.2
+version:             0.4.0.3
 synopsis:            Combinators for describing binary data structures
 description:         Combinators for describing binary data structures, which eliminate the boilerplate of having to write isomorphic Get and Put instances. Please see the Github page for examples.
 homepage:            https://github.com/riugabachi/describe
@@ -37,6 +37,7 @@ common deps
                       ViewPatterns,
                       DefaultSignatures,
                       DataKinds,
+                      TemplateHaskell,
                       UndecidableInstances,
                       PolyKinds,
                       KindSignatures
@@ -51,6 +52,7 @@ common deps
                  text                 >= 1.2.3 && < 1.3,
                  transformers         >= 0.5.6 && < 0.6,
                  lens                 >= 4.18.1 && < 4.19,
+                 template-haskell,
                  mtl                  >= 2.2.2 && < 2.3,
                  profunctors          >= 5.5.1 && < 5.6,
                  mmorph               >= 1.1.3 && < 1.2,

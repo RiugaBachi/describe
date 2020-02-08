@@ -1,5 +1,9 @@
 # Revision history for describe
 
+##0.4.0.3 -- 2020-02-07
+
+* Added `describeVia` as an alternative to now-nonfunctional DerivingVia
+
 ##0.4.0.2 -- 2020-02-07
 
 * Added representational type roles for BE and LE

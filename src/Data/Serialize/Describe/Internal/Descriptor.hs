@@ -15,6 +15,8 @@ import Control.Monad.Morph
 newtype DescriptorM m s a 
   = Descriptor { unwrapDescriptor :: (StateT Int (m Get) a, s -> StateT Int (m PutM) a) }
 
+type role DescriptorM nominal representational nominal
+
 type Descriptor s a = DescriptorM IdentityT s a
 
 instance (MonadTrans m, forall x. Monad x => Monad (m x)) => Functor (DescriptorM m s) where
