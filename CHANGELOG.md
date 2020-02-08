@@ -1,5 +1,9 @@
 # Revision history for describe
 
+##0.4.0.5 -- 2020-02-07
+
+* Fixed `describeVia`
+
 ##0.4.0.4 -- 2020-02-07
 
 * Changed `describeVia` semantics

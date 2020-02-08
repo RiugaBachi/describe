@@ -51,7 +51,7 @@ describeVia wrp dst =
   [d| 
     instance Describe $destination where
       type Context m $destination = Context m ($wrapper $destination)
-      describe = lmap coerce coerce describe
+      describe = dimap (coerce @($destination) @($wrapper $destination)) (coerce @($wrapper $destination) @($destination)) describe
   |]
   where
     wrapper = conT wrp
