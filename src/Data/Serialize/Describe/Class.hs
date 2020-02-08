@@ -43,18 +43,18 @@ class Describe a where
 -- | An alternative to DerivingVia, as the type variable @a@ of @Describe@ is bound to the type family @Context@ making its role @nominal@, and subsequently, uncoercible as per the semantics of DerivingVia. A restriction exists, however: both of the types specified must be @Coercible@.
 describeVia 
   :: Name 
-  -- ^ The type to inherit @describe@ from
+  -- ^ The type wrapper to inherit @describe@ from; must be of type (* -> *)
   -> Name
   --  ^ The type to create a @Describe@ instance for
   -> Q [Dec]
-describeVia src dst =
+describeVia wrp dst =
   [d| 
     instance Describe $destination where
-      type Context m $destination = Context m $source
+      type Context m $destination = Context m ($wrapper $destination)
       describe = lmap coerce coerce describe
   |]
   where
-    source = conT src
+    wrapper = conT wrp
     destination = conT dst
 
 -- | A descriptor from structure to field.

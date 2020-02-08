@@ -2,6 +2,10 @@
 
 ##0.4.0.3 -- 2020-02-07
 
+* Changed `describeVia` semantics
+
+##0.4.0.3 -- 2020-02-07
+
 * Added `describeVia` as an alternative to now-nonfunctional DerivingVia
 
 ##0.4.0.2 -- 2020-02-07
